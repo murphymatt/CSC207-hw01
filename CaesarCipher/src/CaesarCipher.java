@@ -10,7 +10,7 @@ public class CaesarCipher {
 	String option = in.nextLine();
 
 	if (option.equals("encode") || option.equals("decode")) {
-	    String message, key;
+	    String message;
 	    System.out.printf("Enter a string to %s:  ", option);
 	    message = in.nextLine();
 	    String newMessage = iterateMessage(message, option);
