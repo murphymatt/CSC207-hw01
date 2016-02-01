@@ -3,59 +3,61 @@ import java.util.Scanner;
 public class VigenereCipher {
 
     public static void main(String[] args) {
+
 	Scanner in = new Scanner(System.in);
 	System.out.println("This program encrypts and decrypts messages using the Vigenere Cipher.");
 	System.out.print("Would you like to encode or decode a message?  ");
-	String response = in.nextLine();
-	String message, key;
-	switch(response) {
-	case "encode":
-	    System.out.print("Enter a string to encode:  ");
+	String option = in.nextLine();
+
+	if (option.equals("encode") || option.equals("decode")) {
+	    String message, key;
+	    System.out.printf("Enter a string to %s:  ", option);
 	    message = in.nextLine();
-	    System.out.print("Enter the key:  ");
+	    System.out.printf("Enter a key:  ");
 	    key = in.nextLine();
-	    encode(message, key);
-	    break;
-	case "decode":
-	    System.out.print("Enter a string to decode:  ");
-	    message = in.nextLine();
-	    System.out.print("Enter the Key:  ");
-	    key = in.nextLine();
-	    decode(message, key);
-	    break;
-	default:
+	    String newMessage = iterateMessage(message, key, option);
+	    System.out.println(newMessage);
+	} else {
 	    System.out.println("Invalid input, options are \"encode\" and \"decode\"");
-	    break;
-	} // switch(response)
-	
+	}
+
 	in.close();
     } // void main(String[] args)
 
-    public static void encode(String message, String key) {
-	char cEncoded;
-	int cDecoded, keyChange;
-	    for (int index = 0; index < message.length(); index++) {
-		keyChange = key.charAt(index % key.length()) - 'a';
-		cDecoded = message.charAt(index);
-		cEncoded = (char) ((((cDecoded - 'a') + keyChange) % 26) + 'a');
-		System.out.printf("%c", cEncoded);
-	    } // for (index)
-	    System.out.println();
-    } // void encode(String message)
-    
-    public static void decode(String message, String key) {
-    	char cDecoded;
-    	int cEncoded, keyChange, result;
-    	    for (int index = 0; index < message.length(); index++) {
-		keyChange = key.charAt(index % key.length()) - 'a';
-    		cEncoded = message.charAt(index);
-    		result = cEncoded - 'a' - keyChange;
-    		if (result < 0)
-    		    result += 26;
-    		cDecoded = (char) (result + 'a');
-    		System.out.printf("%c", cDecoded);
-    	    } // for (index)
-    	    System.out.println();
-        } // void decode(String message)
+    public static String iterateMessage(String message, String key, String option) {
+	int start, keyChar;
+	char[] newMessage = new char[message.length()];
 
+	// Iterate through letters within message
+	for (int index = 0; index < message.length(); index++) {
+	    // set keyChar according to position within message
+	    keyChar = key.charAt(index % key.length()) - 'a';
+	    start = message.charAt(index) - 'a';
+
+	    if (option.equals("encode")) {
+		//System.out.printf("%c", encode(start, keyChar));
+		newMessage[index] = encode(start, keyChar);
+	    } else if (option.equals("decode")) {
+		//System.out.printf("%c", decode(start, keyChar));
+		newMessage[index] = decode(start, keyChar);
+	    } else {
+		System.out.println("Error, incorrect option. Terminating...");
+		break;
+	    } // if/else
+	}
+
+	return new String(newMessage);
+    } // void iterateMessage(String message, String key, String option)
+
+    public static char encode(int start, int keyChar) {
+	int endToInt = (start + keyChar) % 26;
+	return (char) (endToInt + 'a');
+    } // encode(int start, int keyChar)
+
+    public static char decode(int start, int keyChar) {
+	int endToInt = (start - keyChar);
+	if (endToInt < 0)
+	    endToInt += 26;
+	return (char) (endToInt + 'a');
+    } // encode(int start, int keyChar)
 }
