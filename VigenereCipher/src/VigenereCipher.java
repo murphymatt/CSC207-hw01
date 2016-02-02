@@ -5,26 +5,27 @@ public class VigenereCipher {
     public static void main(String[] args) {
 
 	Scanner in = new Scanner(System.in);
-	System.out.println("This program encrypts and decrypts messages using the Vigenere Cipher.");
+	System.out.println("This program encrypts and decrypts messages " +
+                           "using the Vigenere Cipher.");
 	System.out.print("Would you like to encode or decode a message?  ");
-	String option = in.nextLine();
+	String option = in.nextLine().toLowerCase();
 
 	if (option.equals("encode") || option.equals("decode")) {
-	    String message, key;
 	    System.out.printf("Enter a string to %s:  ", option);
-	    message = in.nextLine();
+	    String message = in.nextLine().toLowerCase();
 	    System.out.printf("Enter a key:  ");
-	    key = in.nextLine();
-	    String newMessage = iterateMessage(message, key, option);
-	    System.out.println(newMessage);
+	    String key = in.nextLine().toLowerCase();
+            iterateMessage(message, key, option);
 	} else {
-	    System.out.println("Invalid input, options are \"encode\" and \"decode\"");
+	    System.out.println("Invalid input, options are \"encode\" " +
+                               "and \"decode\"");
 	}
 
 	in.close();
     } // void main(String[] args)
 
-    public static String iterateMessage(String message, String key, String option) {
+    public static void iterateMessage(String message, String key,
+                                        String option) {
 	int start, keyChar;
 	char[] newMessage = new char[message.length()];
 
@@ -34,7 +35,11 @@ public class VigenereCipher {
 	    keyChar = key.charAt(index % key.length()) - 'a';
 	    start = message.charAt(index) - 'a';
 
-	    if (option.equals("encode")) {
+            if (start < 0 || start > 25 || keyChar < 0 || keyChar > 25) {
+                System.out.println("Message and key must contain only " +
+                                   "lowercase characters.");
+                return;
+            } else if (option.equals("encode")) {
 		//System.out.printf("%c", encode(start, keyChar));
 		newMessage[index] = encode(start, keyChar);
 	    } else if (option.equals("decode")) {
@@ -42,11 +47,11 @@ public class VigenereCipher {
 		newMessage[index] = decode(start, keyChar);
 	    } else {
 		System.out.println("Error, incorrect option. Terminating...");
-		break;
+	        return;
 	    } // if/else
 	}
 
-	return new String(newMessage);
+	System.out.println(new String(newMessage));
     } // void iterateMessage(String message, String key, String option)
 
     public static char encode(int start, int keyChar) {
